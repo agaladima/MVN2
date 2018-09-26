@@ -1,0 +1,10 @@
+extends layout
+block content
+  include header.pug
+  form(method='post', action='' enctype='multipart/form-data')
+    div
+      label(for='file') Choose file to upload:
+      input#userData(type='file', name='importFile', multiple='')
+    div
+      button(type='submit' id='submit') Submit
+  include foot

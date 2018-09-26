@@ -1,0 +1,20 @@
+extends layout
+block content
+	include header.pug
+	h2 Data Pushed to Firebase
+	table
+		tbody
+			tr
+				th Record Number
+				th Full Name
+				th Drivers License Number
+				th Birthdate
+				th Record Created Date
+			each allData in allDatas
+				tr
+					td #{allData.batch_num}
+					td #{allData.first_name} #{allData.last_name}
+					td #{allData.lic_num}
+					td #{allData.birthdate}	
+					td #{allData.date_userID_created}
+	include foot

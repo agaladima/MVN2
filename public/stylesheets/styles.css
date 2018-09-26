@@ -1,0 +1,65 @@
+body {
+	background-color: white;
+	font-family: 'Quicksand', sans-serif;
+}
+nav {
+	margin-bottom: 2em;
+}
+
+nav a {
+	text-decoration: none;
+	font-family: Courier;
+	color: #515151;
+}
+
+nav a:hover {
+	color: #AF9BCC;
+}
+
+nav a:active {
+	color: tomato;
+}
+
+th {
+	padding: 10px;
+}
+
+table{
+  width:100%;
+  table-layout: fixed;
+  text-align: center;
+}
+
+#submitToFb {
+	font-size: 1em;
+	border-color: #AF9BCC;
+	padding: 1.3em;
+	border-radius: 10px;
+	text-align: center;
+	margin-top: 1.5em;
+	margin-left: 50%;
+	margin-right: 50%;
+	cursor: pointer;
+}
+
+.error-page {
+	margin-right: auto;
+	margin-left: auto;
+}
+
+.inner-error {
+	text-align: center;
+	width: 100%;
+	margin: 0;
+	height: 100%;
+}
+
+.icn-person {
+	font-size: 2em;
+	font-weight: bold;
+	color: #929292;
+}
+
+.err-mssg {
+	color: tomato;
+}

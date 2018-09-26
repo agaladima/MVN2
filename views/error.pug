@@ -1,0 +1,9 @@
+extends layout
+block content
+	include header
+	.main.container.error-page
+		.inner-error
+			br
+			p.icn-person.material-icons Error :(
+			img.error-image(src="https://i.kym-cdn.com/photos/images/original/000/510/778/b47")
+			p.err-mssg.lead.m-t-2= message 

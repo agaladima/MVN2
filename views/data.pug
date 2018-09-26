@@ -1,0 +1,24 @@
+extends layout
+block content
+	include header.pug
+	table
+		tbody
+			tr
+				th Record Number
+				th Full Name
+				th Drivers License Number
+				th Birthdate
+				th Record Created Date
+				th Push to Firebase
+			each allData in allDatas
+				tr
+					td #{allData.batch_num}
+					td #{allData.first_name} #{allData.last_name}
+					td #{allData.lic_num}
+					td #{allData.birthdate}	
+					td #{allData.date_userID_created}
+					td
+						form.sendtofb(method='post' action='')
+							input.pushToFb(type='checkbox' name='pushToFb')
+	button(type='submit' id='submitToFb') Push to Firebase
+	include foot
