@@ -39,6 +39,8 @@ admin.initializeApp({
 });
 
 let fdb = admin.firestore();
+fdb.settings(settings);
+
 
 //app.set('port', process.env.PORT || 3000);
 app.use(express.static(path.join(__dirname, 'public')));
@@ -60,11 +62,44 @@ app.get('/createdb', (req, res) => {
 		console.log(result);
 		res.redirect('/');
 	});
+	
 });
+
+var citiesRef = fdb.collection('users');
+var observer = citiesRef.onSnapshot(docSnapshot => {
+  console.log(`Received doc snapshot: ${docSnapshot.size}`);
+  // ...
+  var d =[];
+  docSnapshot.forEach(doc => {
+  	d.push(doc.data());
+  });
+  console.log(d);
+}, err => {
+  console.log(`Encountered error: ${err}`);
+});
+
+observer();
 
 // GET home route
 app.get('/', (req, res, next) => {
-
+	//create table header
+	let tableHeader = 'CREATE TABLE IF NOT EXISTS nodemysql.firebaseSent('
+			+'batch_num INT,'
+			+'date_userID_created DATE,'
+			+'ssn VARCHAR(255), '
+			+'gender VARCHAR(255),'
+			+'first_name VARCHAR(255),'
+			+'last_name VARCHAR(255),'
+			+'lic_num VARCHAR(255),'
+			+'birthdate DATE,'
+			+'points_strike INT,'
+			+'dl_class VARCHAR(255))';
+	//create table and add mysql header
+	db.query(tableHeader, (err, result) => {
+		if(err) {
+			console.log(err);
+		}
+	});
 	res.render('index', {title: 'Home'});
 });
 	
@@ -85,7 +120,7 @@ app.post('/', (req, res, next) => {
     if (err){
     	return res.status(500).send(err);
     }
-    res.redirect('/');
+    res.redirect('/data');
   });
 });
 
@@ -176,6 +211,7 @@ app.post('/table', (req, res) => {
 	console.log('body data: '+req.body.checkedItem);
 	let checkedArray = req.body.checkedItem;
 	let checkedObj;
+	console.log(checkedArray);
 	//search checkedItem array that is passed and retrieve the data from mysql
 	for (let i = 0; i < checkedArray.length; i++) {
 		let queryParam = 'SELECT * FROM nodemysql.userData WHERE batch_num = '+checkedArray[i];
@@ -184,7 +220,7 @@ app.post('/table', (req, res) => {
 				console.log(err);
 			} else {
 				checkedObj = result;
-				//console.log('This is the CHECKEDOBJ '+checkedObj[0].first_name);
+
 				//prepare firestore input data format
 				let fbInput = {
 					batch_num: checkedObj[0].batch_num,
@@ -198,14 +234,28 @@ app.post('/table', (req, res) => {
 					points_strike: checkedObj[0].points_strike,
 					dl_class: checkedObj[0].dl_class
 				};
+
 				//send data to firestore
 				let MVNDatabase = fdb.collection('users').doc(checkedArray[i]);
 				let MVNCollection = MVNDatabase.set(fbInput);
 			}
 		});
+
+		//INSERT into stored firebase table
+		let insertQuery = 'INSERT INTO nodemysql.firebaseSent SELECT * FROM nodemysql.userData WHERE batch_num = '+checkedArray[i];
+		db.query(insertQuery, (err, result) => {
+			if(err){
+				console.log(err);
+			} else {
+				console.log('Info added to the sent to firebase table');
+			}
+		});
 	}
-	
-	let queryParams = 'SELECT * FROM nodemysql.userData WHERE batch_num IN ('+checkedArray+')';
+	return res.redirect('/datatwo');
+});
+
+app.get('/datatwo', (req, res) => {
+	let queryParams = 'SELECT * FROM nodemysql.firebaseSent';
 	//get data from mysql
 	db.query(queryParams, (err, result) => {
 		if(err) {
@@ -213,14 +263,10 @@ app.post('/table', (req, res) => {
 		} else{
 			return res.render('datatwo', {
 				title: 'Pushed to Firebase',
-				allDatas: result,
+				allDatas: result
 			});
 		}
 	});
-});
-
-app.get('/datatwo', (req, res) => {
-	return res.render('datatwo');
 });
 
 app.post('/datatwo', (req, res) => {
