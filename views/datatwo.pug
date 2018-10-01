@@ -1,7 +1,7 @@
 extends layout
 block content
 	include header.pug
-	h2 Data Pushed to Firebase
+	h2 -Data Pushed to Firestore-
 	table
 		tbody
 			tr
@@ -11,7 +11,7 @@ block content
 				th Birthdate
 				th Record Created Date
 			each allData in allDatas
-				tr
+				tr.table-rows
 					td #{allData.batch_num}
 					td #{allData.first_name} #{allData.last_name}
 					td #{allData.lic_num}
